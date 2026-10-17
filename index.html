@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b12">
+  <meta name="description" content="StokIn - aplikasi manajemen stok barang sederhana.">
+  <title>StokIn — Manajemen Stok Barang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="StokIn beranda">
+        <span class="brand-mark">S</span>
+        <span>Stok<span class="brand-blue">In</span><small>INVENTORY SYSTEM</small></span>
+      </a>
+
+      <div class="side-label">MENU UTAMA</div>
+      <nav class="nav-menu" aria-label="Navigasi utama">
+        <button class="nav-link active" data-view="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
+        <button class="nav-link" data-view="items"><span class="nav-icon">▤</span>Data Barang</button>
+        <button class="nav-link" data-view="transactions"><span class="nav-icon">⇄</span>Transaksi Stok</button>
+        <button class="nav-link" data-view="history"><span class="nav-icon">◷</span>Riwayat Transaksi</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <div class="tip-icon">✦</div>
+          <strong>Tips StokIn</strong>
+          <p>Periksa stok menipis secara berkala agar barang selalu tersedia.</p>
+        </div>
+        <div class="local-status"><span class="status-dot"></span> Data tersimpan di perangkat ini</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu icon-button" id="mobileMenu" aria-label="Buka menu">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="pageTitle">Dashboard</strong></div>
+        <div class="topbar-right">
+          <span class="today-date" id="todayDate"></span>
+          <div class="avatar">SA</div>
+        </div>
+      </header>
+
+      <section class="page-view active" id="view-dashboard">
+        <div class="page-heading">
+          <div><p class="eyebrow">RINGKASAN INVENTARIS</p><h1>Dashboard</h1><p class="page-subtitle">Pantau kondisi persediaan barangmu hari ini.</p></div>
+          <button class="btn btn-primary" data-action="add-item"><span>＋</span> Tambah Barang</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Total Jenis Barang</span><span class="stat-icon blue">▤</span></div>
+            <div class="stat-value" id="statKinds">0</div><div class="stat-foot"><span class="mini-dot blue-dot"></span> SKU terdaftar</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Total Unit Stok</span><span class="stat-icon violet">▦</span></div>
+            <div class="stat-value" id="statUnits">0</div><div class="stat-foot"><span class="mini-dot violet-dot"></span> Unit tersedia</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Stok Menipis</span><span class="stat-icon orange">⚠</span></div>
+            <div class="stat-value" id="statLow">0</div><div class="stat-foot"><span class="mini-dot orange-dot"></span> Perlu diperiksa</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Stok Habis</span><span class="stat-icon red">⊘</span></div>
+            <div class="stat-value" id="statOut">0</div><div class="stat-foot"><span class="mini-dot red-dot"></span> Barang kosong</div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel inventory-panel">
+            <div class="panel-heading"><div><h2>Inventaris Terbaru</h2><p>Daftar barang yang tersimpan</p></div><button class="text-button" data-view="items">Lihat semua <span>→</span></button></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>BARANG</th><th>KATEGORI</th><th>STOK</th><th>STATUS</th></tr></thead>
+                <tbody id="dashboardItems"></tbody>
+              </table>
+              <div class="empty-state hidden" id="dashboardEmpty"><span class="empty-icon">▤</span><strong>Belum ada barang</strong><p>Tambahkan barang pertama untuk mulai mengelola inventaris.</p><button class="btn btn-secondary" data-action="add-item">＋ Tambah Barang</button></div>
+            </div>
+          </section>
+
+          <section class="panel activity-panel">
+            <div class="panel-heading"><div><h2>Aktivitas Terbaru</h2><p>Perubahan stok terakhir</p></div><button class="text-button" data-view="history">Lihat semua <span>→</span></button></div>
+            <div id="dashboardActivity" class="activity-list"></div>
+            <div class="empty-state compact hidden" id="activityEmpty"><span class="empty-icon">◷</span><strong>Belum ada aktivitas</strong><p>Transaksi stok akan muncul di sini.</p></div>
+          </section>
+        </div>
+        <footer class="footer-note">StokIn <span>•</span> Kelola inventaris dengan lebih praktis.</footer>
+      </section>
+
+      <section class="page-view" id="view-items">
+        <div class="page-heading">
+          <div><p class="eyebrow">INVENTARIS</p><h1>Data Barang</h1><p class="page-subtitle">Kelola daftar barang dan pantau jumlah persediaan.</p></div>
+          <button class="btn btn-primary" data-action="add-item"><span>＋</span> Tambah Barang</button>
+        </div>
+        <section class="panel">
+          <div class="toolbar">
+            <div class="search-box"><span>⌕</span><input id="itemSearch" type="search" placeholder="Cari nama atau kode barang..." aria-label="Cari barang"></div>
+            <select id="categoryFilter" class="select-control" aria-label="Filter kategori"><option value="">Semua kategori</option></select>
+            <select id="statusFilter" class="select-control" aria-label="Filter status"><option value="">Semua status</option><option value="available">Tersedia</option><option value="low">Menipis</option><option value="out">Habis</option></select>
+            <button class="btn btn-secondary" id="exportItems">⇩ Ekspor CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>BARANG</th><th>KODE</th><th>KATEGORI</th><th>HARGA</th><th>STOK</th><th>STATUS</th><th class="align-right">AKSI</th></tr></thead>
+              <tbody id="itemsTable"></tbody>
+            </table>
+            <div class="empty-state hidden" id="itemsEmpty"><span class="empty-icon">⌕</span><strong id="itemsEmptyTitle">Barang tidak ditemukan</strong><p id="itemsEmptyText">Coba ubah kata kunci atau filter.</p></div>
+          </div>
+          <div class="table-footer"><span id="itemsCount">Menampilkan 0 barang</span><span class="storage-note"><span class="status-dot"></span> Tersimpan otomatis</span></div>
+        </section>
+        <footer class="footer-note">Data disimpan di browser yang kamu gunakan. Ekspor CSV secara berkala sebagai cadangan.</footer>
+      </section>
+
+      <section class="page-view" id="view-transactions">
+        <div class="page-heading"><div><p class="eyebrow">PERGERAKAN BARANG</p><h1>Transaksi Stok</h1><p class="page-subtitle">Catat barang masuk atau keluar agar stok tetap akurat.</p></div></div>
+        <div class="transaction-layout">
+          <section class="panel transaction-form-panel">
+            <div class="panel-heading"><div><h2>Buat Transaksi</h2><p>Isi detail pergerakan barang di bawah ini.</p></div><span class="stat-icon blue">⇄</span></div>
+            <form id="transactionForm" class="form-stack">
+              <div class="form-field"><label for="transactionType">Jenis Transaksi <span>*</span></label><div class="segmented"><label><input type="radio" name="transactionType" value="in" checked><span>↓ Barang Masuk</span></label><label><input type="radio" name="transactionType" value="out"><span>↑ Barang Keluar</span></label></div></div>
+              <div class="form-field"><label for="transactionItem">Pilih Barang <span>*</span></label><select id="transactionItem" required><option value="">Pilih barang...</option></select><small id="availableStock" class="field-hint">Pilih barang untuk melihat stok saat ini.</small></div>
+              <div class="form-field"><label for="transactionQty">Jumlah Unit <span>*</span></label><input id="transactionQty" type="number" min="1" step="1" placeholder="Contoh: 10" required><small class="field-hint">Masukkan jumlah unit yang masuk atau keluar.</small></div>
+              <div class="form-field"><label for="transactionNote">Catatan <span class="optional">(opsional)</span></label><textarea id="transactionNote" rows="3" maxlength="180" placeholder="Contoh: Pembelian dari supplier..."></textarea></div>
+              <div class="transaction-preview"><span>Stok setelah transaksi</span><strong id="stockPreview">—</strong></div>
+              <button class="btn btn-primary btn-full" type="submit">Simpan Transaksi <span>→</span></button>
+            </form>
+          </section>
+          <section class="panel quick-panel"><div class="panel-heading"><div><h2>Panduan Transaksi</h2><p>Pastikan data sesuai kondisi barang.</p></div></div>
+            <div class="guide-item"><span class="guide-number">01</span><div><strong>Pilih jenis transaksi</strong><p>Barang masuk menambah stok, barang keluar mengurangi stok.</p></div></div>
+            <div class="guide-item"><span class="guide-number">02</span><div><strong>Pilih barang dan jumlah</strong><p>Periksa stok yang tersedia sebelum menyimpan transaksi keluar.</p></div></div>
+            <div class="guide-item"><span class="guide-number">03</span><div><strong>Simpan dan periksa riwayat</strong><p>Setiap transaksi tercatat dan stok diperbarui otomatis.</p></div></div>
+            <div class="notice-box"><span>ⓘ</span><p>Transaksi barang keluar tidak dapat melebihi jumlah stok yang tersedia.</p></div>
+          </section>
+        </div>
+        <footer class="footer-note">Semua transaksi tercatat pada riwayat dan disimpan secara lokal.</footer>
+      </section>
+
+      <section class="page-view" id="view-history">
+        <div class="page-heading"><div><p class="eyebrow">LOG AKTIVITAS</p><h1>Riwayat Transaksi</h1><p class="page-subtitle">Lacak perubahan stok yang pernah dicatat.</p></div><button class="btn btn-secondary" id="exportHistory">⇩ Ekspor Riwayat</button></div>
+        <section class="panel">
+          <div class="toolbar">
+            <div class="search-box"><span>⌕</span><input id="historySearch" type="search" placeholder="Cari barang atau catatan..." aria-label="Cari riwayat"></div>
+            <select id="historyTypeFilter" class="select-control" aria-label="Filter jenis transaksi"><option value="">Semua transaksi</option><option value="in">Barang masuk</option><option value="out">Barang keluar</option></select>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>TANGGAL & WAKTU</th><th>BARANG</th><th>JENIS</th><th>JUMLAH</th><th>CATATAN</th></tr></thead><tbody id="historyTable"></tbody></table>
+            <div class="empty-state hidden" id="historyEmpty"><span class="empty-icon">◷</span><strong>Belum ada riwayat</strong><p>Transaksi yang kamu simpan akan muncul di sini.</p></div>
+          </div>
+          <div class="table-footer"><span id="historyCount">0 transaksi</span><span class="storage-note"><span class="status-dot"></span> Tersimpan otomatis</span></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="itemModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header"><div><p class="eyebrow">DATA INVENTARIS</p><h2 id="modalTitle">Tambah Barang</h2><p>Lengkapi informasi barang di bawah ini.</p></div><button class="icon-button close-modal" data-action="close-modal" aria-label="Tutup">×</button></div>
+      <form id="itemForm">
+        <input type="hidden" id="editItemId">
+        <div class="form-grid">
+          <div class="form-field full-field"><label for="itemName">Nama Barang <span>*</span></label><input id="itemName" required maxlength="80" placeholder="Contoh: Keyboard Mechanical"></div>
+          <div class="form-field"><label for="itemCode">Kode Barang <span>*</span></label><input id="itemCode" required maxlength="24" placeholder="Contoh: BRG-001"></div>
+          <div class="form-field"><label for="itemCategory">Kategori <span>*</span></label><input id="itemCategory" required maxlength="40" list="categorySuggestions" placeholder="Contoh: Elektronik"><datalist id="categorySuggestions"><option value="Elektronik"><option value="ATK"><option value="Perlengkapan"><option value="Makanan"><option value="Lainnya"></datalist></div>
+          <div class="form-field"><label for="itemPrice">Harga per Unit (Rp) <span>*</span></label><input id="itemPrice" required type="number" min="0" step="1" placeholder="Contoh: 150000"></div>
+          <div class="form-field"><label for="itemStock">Jumlah Stok <span>*</span></label><input id="itemStock" required type="number" min="0" step="1" placeholder="Contoh: 25"></div>
+          <div class="form-field full-field"><label for="itemMinStock">Batas Stok Menipis</label><input id="itemMinStock" type="number" min="0" step="1" value="5"><small class="field-hint">Barang dianggap menipis saat stok lebih dari 0 dan sama dengan atau di bawah batas ini.</small></div>
+        </div>
+        <div class="modal-actions"><button type="button" class="btn btn-secondary" data-action="close-modal">Batal</button><button type="submit" class="btn btn-primary">Simpan Barang</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status" aria-live="polite"><span id="toastIcon">✓</span><span id="toastMessage">Berhasil disimpan</span></div>
+  <script src="script.js"></script>
+</body>
+</html>
